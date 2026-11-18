@@ -1,0 +1,9 @@
+# Reglas comunes a frontend/ y backend/ (cada carpeta tiene además su propio .gitignore)
+node_modules/
+dist/
+.vite/
+.env
+.env.local
+*.log
+.DS_Store
+Thumbs.db

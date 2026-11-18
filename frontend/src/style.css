@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer components {
+  /* Input field base styles */
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all disabled:bg-gray-100;
+  }
+
+  /* Label base styles */
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 mb-2;
+  }
+
+  /* Error message container */
+  .error-container {
+    @apply mb-4 p-4 bg-red-50 border border-red-200 rounded-lg;
+  }
+
+  /* Error text */
+  .error-text {
+    @apply text-sm text-red-600;
+  }
+
+  /* Form container */
+  .form-container {
+    @apply bg-white rounded-2xl shadow-xl p-8;
+  }
+
+  /* Auth page container */
+  .auth-page {
+    @apply min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4;
+  }
+
+  /* Auth card */
+  .auth-card {
+    @apply w-full max-w-md;
+  }
+
+  /* Auth header */
+  .auth-header {
+    @apply text-center mb-8;
+  }
+
+  /* Auth icon container */
+  .auth-icon {
+    @apply inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4 shadow-lg;
+  }
+
+  /* Auth title */
+  .auth-title {
+    @apply text-3xl font-bold text-gray-900 mb-2;
+  }
+
+  /* Auth subtitle */
+  .auth-subtitle {
+    @apply text-gray-600;
+  }
+
+  /* Form section title */
+  .form-title {
+    @apply text-2xl font-semibold text-gray-900 mb-6;
+  }
+
+  /* Form field container */
+  .form-field {
+    @apply mb-4;
+  }
+
+  /* Form field container (last) */
+  .form-field-last {
+    @apply mb-6;
+  }
+
+  /* Password toggle button */
+  .password-toggle {
+    @apply absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700;
+  }
+
+  /* Link text */
+  .link-text {
+    @apply text-blue-600 font-semibold hover:text-blue-700 ml-1;
+  }
+
+  /* Helper text */
+  .helper-text {
+    @apply text-gray-600;
+  }
+
+  /* Page container */
+  .page-container {
+    @apply p-8;
+  }
+
+  /* Page header */
+  .page-header {
+    @apply flex flex-wrap items-center justify-between mb-8;
+  }
+
+  /* Page title */
+  .page-title {
+    @apply text-3xl font-bold text-gray-900 mb-2;
+  }
+
+  /* Page subtitle */
+  .page-subtitle {
+    @apply text-gray-600;
+  }
+
+  /* Card base */
+  .card {
+    @apply bg-white rounded-xl shadow-md p-6;
+  }
+
+  /* Card with border accent */
+  .card-accent {
+    @apply bg-white rounded-xl shadow-md p-6 border-l-4;
+  }
+
+  /* Section title */
+  .section-title {
+    @apply text-xl font-semibold text-gray-900;
+  }
+
+  /* Section title with margin */
+  .section-title-mb {
+    @apply text-xl font-semibold text-gray-900 mb-6;
+  }
+
+  /* Detail label */
+  .detail-label {
+    @apply block text-sm font-medium text-gray-500 mb-1;
+  }
+
+  /* Detail value */
+  .detail-value {
+    @apply text-lg font-semibold text-gray-900;
+  }
+
+  /* Stat label */
+  .stat-label {
+    @apply text-gray-600 text-sm font-medium mb-1;
+  }
+
+  /* Stat value */
+  .stat-value {
+    @apply text-3xl font-bold text-gray-900;
+  }
+
+  /* Stat secondary text */
+  .stat-secondary {
+    @apply text-sm text-gray-500 mt-1;
+  }
+
+  /* Icon container */
+  .icon-container {
+    @apply w-12 h-12 rounded-lg flex items-center justify-center;
+  }
+
+  /* Table container */
+  .table-container {
+    @apply bg-white rounded-xl shadow-md overflow-hidden;
+  }
+
+  /* Table header */
+  .table-header {
+    @apply bg-gray-50 border-b border-gray-200;
+  }
+
+  /* Table header cell */
+  .table-header-cell {
+    @apply px-6 py-4 text-left text-sm font-semibold text-gray-900;
+  }
+
+  /* Table body cell */
+  .table-body-cell {
+    @apply px-6 py-4;
+  }
+
+  /* Table body text */
+  .table-body-text {
+    @apply text-sm text-gray-600;
+  }
+
+  /* Table row hover */
+  .table-row {
+    @apply hover:bg-gray-50 transition-colors;
+  }
+
+  /* Empty state text */
+  .empty-state {
+    @apply px-6 py-8 text-center text-gray-500;
+  }
+}
