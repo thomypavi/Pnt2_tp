@@ -21,8 +21,12 @@ require('dotenv').config(); // Cargar variables de entorno desde .env
  */
 const baseConfig = {
   dialect: 'postgres',
+  // Pasar el driver explícitamente: en Vercel, Sequelize no lo encuentra solo
+  dialectModule: require('pg'),
   protocol: 'postgres',
   logging: false, // Cambiar a console.log para ver las consultas SQL
+  // Pocas conexiones por instancia: en Vercel puede haber varias instancias a la vez
+  pool: { max: 3, min: 0, idle: 10000 },
   dialectOptions: {
     ssl: {
       require: true,              // Requerir conexión SSL

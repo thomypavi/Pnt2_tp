@@ -84,7 +84,7 @@ exports.register = async (req, res, next) => {
      * El token se envía al frontend y se usa para autenticar peticiones futuras
      */
     const token = jwt.sign(
-      { userId: user.id, email: user.email }, // Payload: datos que se guardan en el token
+      { userId: user.id, email: user.email, role: user.role }, // Payload: datos que se guardan en el token
       process.env.JWT_SECRET || 'your-secret-key-change-in-production', // Clave secreta
       { expiresIn: '7d' } // El token expira en 7 días
     );
@@ -163,7 +163,7 @@ exports.login = async (req, res, next) => {
     // Si llegamos aquí, las credenciales son correctas
     // Generar token JWT (igual que en register)
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
+      { userId: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET || 'your-secret-key-change-in-production',
       { expiresIn: '7d' }
     );

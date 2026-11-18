@@ -39,6 +39,13 @@ const routes = [
         path: 'categories',
         name: 'Categories',
         component: () => import('../views/Categories.vue')
+      },
+      {
+        // Panel de administración: solo para usuarios con rol 'admin'
+        path: 'admin',
+        name: 'Admin',
+        component: () => import('../views/Admin.vue'),
+        meta: { requiresRole: 'admin' }
       }
     ]
   },
@@ -65,6 +72,15 @@ router.beforeEach(async (to, from, next) => {
   // Rutas que requieren autenticación
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login')
+    return
+  }
+
+  // Rutas que requieren un rol específico (ej. meta: { requiresRole: 'admin' })
+  // to.matched incluye las rutas padre, así que también funciona con rutas anidadas.
+  // Ojo: esto solo oculta la vista; la seguridad real la hace el backend (403).
+  const requiredRole = to.matched.find(r => r.meta.requiresRole)?.meta.requiresRole
+  if (requiredRole && authStore.user?.role !== requiredRole) {
+    next('/')
     return
   }
 

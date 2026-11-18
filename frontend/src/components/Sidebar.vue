@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, h } from 'vue'
+import { ref, computed, onMounted, h } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -154,23 +154,51 @@ const CategoriesIcon = () => h('svg', {
   })
 ])
 
-const menuItems = [
-  {
-    path: '/',
-    label: 'Dashboard',
-    icon: DashboardIcon
-  },
-  {
-    path: '/expenses',
-    label: 'Gastos',
-    icon: ExpensesIcon
-  },
-  {
-    path: '/categories',
-    label: 'Categorías',
-    icon: CategoriesIcon
+const AdminIcon = () => h('svg', {
+  fill: 'none',
+  stroke: 'currentColor',
+  viewBox: '0 0 24 24',
+  class: 'w-5 h-5'
+}, [
+  h('path', {
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+    'stroke-width': '2',
+    d: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'
+  })
+])
+
+// computed: si cambia el usuario (login/logout), el menú se recalcula solo
+const menuItems = computed(() => {
+  const items = [
+    {
+      path: '/',
+      label: 'Dashboard',
+      icon: DashboardIcon
+    },
+    {
+      path: '/expenses',
+      label: 'Gastos',
+      icon: ExpensesIcon
+    },
+    {
+      path: '/categories',
+      label: 'Categorías',
+      icon: CategoriesIcon
+    }
+  ]
+
+  // El ítem de administración solo se muestra a los admins
+  if (props.user?.role === 'admin') {
+    items.push({
+      path: '/admin',
+      label: 'Administración',
+      icon: AdminIcon
+    })
   }
-]
+
+  return items
+})
 
 onMounted(() => {
   // Cargar preferencia de sidebar colapsado

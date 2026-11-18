@@ -9,6 +9,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => !!token.value && !!user.value)
 
+  // Rol del usuario logueado ('user' | 'admin'), viene del backend en login, register y /auth/me
+  const isAdmin = computed(() => user.value?.role === 'admin')
+
   // Inicializar usuario desde token guardado
   const initAuth = async () => {
     if (token.value) {
@@ -75,6 +78,7 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     token,
     isAuthenticated,
+    isAdmin,
     initAuth,
     login,
     register,

@@ -78,6 +78,24 @@ const User = sequelize.define('User', {
       notEmpty: true,
       len: [6, 100] // Mínimo 6 caracteres, máximo 100
     }
+  },
+
+  /**
+   * Rol del usuario
+   *
+   * - 'user': usuario común, solo ve y gestiona sus propios gastos y categorías
+   * - 'admin': además puede entrar al panel de administración (/admin)
+   *
+   * Todo usuario nuevo se registra como 'user'. Para hacer admin a alguien,
+   * se cambia este campo desde el panel de admin o desde Supabase (Table Editor → users).
+   */
+  role: {
+    type: DataTypes.STRING(10),
+    allowNull: false,
+    defaultValue: 'user',
+    validate: {
+      isIn: [['user', 'admin']]
+    }
   }
 }, {
   /**

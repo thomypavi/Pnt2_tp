@@ -14,6 +14,7 @@ const errorHandler = require('./middleware/errorHandler');
 const authRoutes = require('./routes/authRoutes');        // Rutas de autenticación (login, register)
 const categoryRoutes = require('./routes/categoryRoutes'); // Rutas de categorías
 const expenseRoutes = require('./routes/expenseRoutes');   // Rutas de gastos
+const adminRoutes = require('./routes/adminRoutes');       // Rutas de administración (solo admin)
 
 const app = express();
 const PORT = process.env.PORT || 3003; // Puerto desde variable de entorno (3003 por defecto, el que espera el frontend)
@@ -87,6 +88,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/expenses', expenseRoutes);
 
+// Rutas de administración: /api/admin/* (requieren rol admin)
+app.use('/api/admin', adminRoutes);
+
 /**
  * MANEJO DE ERRORES
  * 
@@ -135,19 +139,31 @@ const startServer = async () => {
   }
 };
 
-// Ejecutar la función para iniciar el servidor
-startServer();
-
 /**
- * MANEJO DE CIERRE GRACEFUL
- * 
- * SIGTERM es una señal que se envía para pedirle al proceso que termine
- * (por ejemplo, cuando se detiene el servidor en producción).
- * Esto permite cerrar conexiones de base de datos correctamente antes de salir.
+ * ¿LOCAL O VERCEL?
+ *
+ * - En local (npm run dev / npm start) levantamos el servidor con app.listen().
+ * - En Vercel no hay un servidor "prendido" todo el tiempo: Vercel importa `app`
+ *   y la ejecuta como función serverless en cada request. Por eso ahí NO se llama
+ *   a startServer() (ni a listen ni a sync: las tablas ya existen en Supabase).
+ *   Vercel define automáticamente la variable de entorno VERCEL=1.
  */
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM recibido, cerrando servidor...');
-  await sequelize.close(); // Cerrar conexión a la base de datos
-  process.exit(0); // Salir con código de éxito
-});
+if (!process.env.VERCEL) {
+  startServer();
+
+  /**
+   * MANEJO DE CIERRE GRACEFUL
+   *
+   * SIGTERM es una señal que se envía para pedirle al proceso que termine.
+   * Esto permite cerrar conexiones de base de datos correctamente antes de salir.
+   */
+  process.on('SIGTERM', async () => {
+    console.log('SIGTERM recibido, cerrando servidor...');
+    await sequelize.close(); // Cerrar conexión a la base de datos
+    process.exit(0); // Salir con código de éxito
+  });
+}
+
+// Exportar la app para que Vercel la pueda ejecutar
+module.exports = app;
 
