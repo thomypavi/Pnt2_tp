@@ -23,6 +23,9 @@ const { checkCategoryOwnership } = require('../middleware/checkOwnership');
 // Listar todas las categorías del usuario
 router.get('/', authenticate, categoryController.getAllCategories);
 
+// Sugerir categoría para un gasto según comercio/descripción (va antes de las rutas con :id)
+router.post('/suggest', authenticate, categoryController.suggestCategory);
+
 // Obtener una categoría específica por ID
 router.get('/:id', authenticate, checkCategoryOwnership, categoryController.getCategoryById);
 

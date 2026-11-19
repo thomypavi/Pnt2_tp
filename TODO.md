@@ -9,10 +9,10 @@ Lista de pendientes. Al terminar algo, se marca `[x]` y se commitea junto con el
 - [x] Sacar del código del backend las URLs de CORS y leerlas de la variable `FRONTEND_URL`
 - [x] Crear una base Postgres propia en Supabase y poner su URL (Session pooler) como `DATABASE_URL` en `backend/.env`
 - [x] Adaptar el backend para que corra en Vercel (exporta `app`, `listen` solo en local)
-- [ ] Desplegar el backend en Vercel (proyecto aparte, Root Directory: `backend`), con las variables `DATABASE_URL` (Transaction pooler de Supabase, puerto 6543), `JWT_SECRET`, `NODE_ENV=production` y `FRONTEND_URL`
+- [x] Desplegar el backend en Vercel (proyecto aparte, Root Directory: `backend`), con las variables `DATABASE_URL` (Transaction pooler de Supabase, puerto 6543), `JWT_SECRET`, `NODE_ENV=production` y `FRONTEND_URL`
 - [x] Sacar la URL del backend del código y leerla de la variable `VITE_API_URL`
-- [ ] Cargar `VITE_API_URL` con la URL del backend en Vercel (en Vercel y en `.env.local`)
-- [ ] Desplegar el frontend en un Vercel propio (Root Directory: `frontend`)
+- [x] Cargar `VITE_API_URL` con la URL del backend en Vercel (en Vercel y en `.env.local`)
+- [x] Desplegar el frontend en un Vercel propio (Root Directory: `frontend`)
 
 ## 2. Requisitos obligatorios que faltan
 
@@ -31,21 +31,21 @@ Lista de pendientes. Al terminar algo, se marca `[x]` y se commitea junto con el
 - [ ] Probar que se instala desde el celular
 
 ### CI/CD
-- [ ] Crear `.github/workflows/ci.yml` (install, test, build en cada push o PR)
-- [ ] Crear `.github/workflows/deploy.yml` (deploy a Vercel al pushear a `main`)
-- [ ] Cargar en GitHub los secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` y `VITE_API_URL`
+- [x] Crear `.github/workflows/ci.yml` (install, test, build en cada push o PR)
+- [x] Crear `.github/workflows/deploy.yml` (deploy a Vercel al pushear a `main`, solo si pasa el CI)
+- [ ] Cargar en GitHub (repo de entrega) los secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID_BACKEND` y `VERCEL_PROJECT_ID_FRONTEND` (ver README)
 
 ### README
 - [x] Explicar paso a paso la instalación de frontend y backend (README de la raíz)
-- [ ] Escribir la descripción del proyecto
-- [ ] Explicar cada secret de GitHub y de dónde se saca
+- [x] Escribir la descripción del proyecto
+- [x] Explicar cada secret de GitHub y de dónde se saca
 
 ## 3. Opcionales (suman nota)
 
 - [x] Dashboard con gráficos visible solo para admin (vista `/admin`)
-- [ ] Tests unitarios con Vitest para `authStore`, `expenseStore` y los composables
+- [x] Tests unitarios: Vitest en el frontend (`authStore`, composable de sugerencia, utils) y `node --test` en el backend (`requireAdmin`, sugerencia de categoría)
 - [ ] Mail de bienvenida al registrarse (nodemailer + contraseña de aplicación de Gmail, con `EMAIL_USER` y `EMAIL_PASS` en el `.env`)
-- [ ] Alguna función con IA (por ejemplo, sugerir la categoría a partir de la descripción del gasto)
+- [x] Sugerir la categoría de un gasto por palabras clave
 
 ## 4. Entender el proyecto
 

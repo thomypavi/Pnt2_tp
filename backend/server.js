@@ -33,9 +33,17 @@ const corsOptions = {
     
     // Lista de orígenes permitidos (dominios que pueden hacer peticiones)
     // FRONTEND_URL: URL(s) del frontend en producción (Vercel), separadas por coma
+    // Se normaliza cada URL con new URL(...).origin, así funciona aunque la variable
+    // tenga "/" al final, espacios o alguna ruta (ej. "https://mi-app.vercel.app/login")
     const productionOrigins = (process.env.FRONTEND_URL || '')
       .split(',')
-      .map(url => url.trim())
+      .map(url => {
+        try {
+          return new URL(url.trim()).origin;
+        } catch {
+          return null; // Valor inválido: se ignora (y se ve en el log de abajo)
+        }
+      })
       .filter(Boolean);
 
     const allowedOrigins = [
@@ -55,7 +63,9 @@ const corsOptions = {
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      // Se ve en Vercel → proyecto del backend → Logs. Muestra qué llegó y qué se esperaba.
       console.warn(`⚠️  CORS bloqueado para origin: ${origin}`);
+      console.warn(`   FRONTEND_URL leída: ${JSON.stringify(process.env.FRONTEND_URL)} → orígenes permitidos: ${JSON.stringify(productionOrigins)}`);
       callback(new Error('No permitido por CORS'));
     }
   },
@@ -90,6 +100,7 @@ app.use('/api/expenses', expenseRoutes);
 
 // Rutas de administración: /api/admin/* (requieren rol admin)
 app.use('/api/admin', adminRoutes);
+
 
 /**
  * MANEJO DE ERRORES

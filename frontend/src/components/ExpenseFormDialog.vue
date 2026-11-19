@@ -107,16 +107,31 @@
 
       <div class="field">
         <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
-        <Dropdown
-          id="category"
-          v-model="form.categoryId"
-          :options="categoryOptions"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Selecciona una categoría (opcional)"
-          class="w-full"
-          showClear
-        />
+        <div class="flex gap-2">
+          <Dropdown
+            id="category"
+            v-model="form.categoryId"
+            :options="categoryOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecciona una categoría (opcional)"
+            class="flex-1 min-w-0"
+            showClear
+          />
+          <!-- Sugerir categoría según el vendedor y la descripción (palabras clave) -->
+          <Button
+            type="button"
+            label="Sugerir"
+            icon="pi pi-tag"
+            severity="secondary"
+            outlined
+            :loading="suggesting"
+            :disabled="suggesting || (!form.vendor && !form.description) || categories.length === 0"
+            v-tooltip.top="'Sugerir categoría según el vendedor y la descripción'"
+            @click="handleSuggest"
+          />
+        </div>
+        <small v-if="hint" :class="['block mt-1', hintIsError ? 'text-red-600' : 'text-gray-600']">{{ hint }}</small>
       </div>
 
       <div class="field">
@@ -176,6 +191,7 @@ import Textarea from 'primevue/textarea'
 import Dropdown from 'primevue/dropdown'
 import Button from 'primevue/button'
 import { formatDateToString, parseDateString } from '../utils/date'
+import { useCategorySuggestion } from '../composables/useCategorySuggestion'
 
 const props = defineProps({
   visible: {
@@ -324,6 +340,19 @@ const handleAmountChange = () => {
     })
   }
 }
+
+// Sugerencia de categoría (palabras clave)
+const { suggesting, hint, hintIsError, suggest, clearHint } = useCategorySuggestion()
+
+const handleSuggest = async () => {
+  const categoryId = await suggest(form.value.vendor, form.value.description)
+  if (categoryId) {
+    form.value.categoryId = categoryId
+  }
+}
+
+// Al abrir/cerrar el formulario o cambiar de gasto, limpiar el mensaje de la sugerencia
+watch(() => [props.visible, props.initialExpense], clearHint)
 
 const handleSubmit = () => {
   const dateString = formDate.value ? formatDateToString(formDate.value) : form.value.date

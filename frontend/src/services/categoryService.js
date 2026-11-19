@@ -12,6 +12,10 @@ const categoryService = {
   },
   deleteCategory (id) {
     return api.delete(`/categories/${id}`)
+  },
+  // Sugiere una categoría según el comercio y la descripción del gasto (palabras clave)
+  suggestCategory (vendor, description) {
+    return api.post('/categories/suggest', { vendor, description })
   }
 }
 

@@ -1,0 +1,68 @@
+# CD (Despliegue Continuo)
+#
+# Cuando se pushea a main:
+#   1. Corre el CI completo (tests + build). Si falla, NO se despliega nada.
+#   2. Si pasó, despliega backend y frontend a Vercel (producción) con la CLI de Vercel.
+#
+# Secrets necesarios (GitHub → repo → Settings → Secrets and variables → Actions):
+#   VERCEL_TOKEN                  Token personal de Vercel
+#   VERCEL_ORG_ID                 ID del equipo/cuenta de Vercel
+#   VERCEL_PROJECT_ID_BACKEND     ID del proyecto del backend en Vercel
+#   VERCEL_PROJECT_ID_FRONTEND    ID del proyecto del frontend en Vercel
+# Ver la sección "CI/CD y secrets de GitHub" del README para saber de dónde sacar cada uno.
+#
+# Si VERCEL_TOKEN no está cargado, el deploy se saltea (el CI corre igual).
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Permite correrlo a mano desde la pestaña Actions
+
+# Si se pushea dos veces seguidas, el deploy viejo se cancela
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    name: Deploy a Vercel (${{ matrix.app }})
+    needs: ci
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - app: backend
+            project_secret: VERCEL_PROJECT_ID_BACKEND
+          - app: frontend
+            project_secret: VERCEL_PROJECT_ID_FRONTEND
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets[matrix.project_secret] }}
+    steps:
+      - name: Verificar secrets
+        id: check
+        run: |
+          if [ -z "$VERCEL_TOKEN" ] || [ -z "$VERCEL_ORG_ID" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
+            echo "⚠️ Faltan secrets de Vercel: se saltea el deploy de ${{ matrix.app }}."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.skip != 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.skip != 'true'
+        with:
+          node-version: 22
+
+      # Se ejecuta desde la raíz del repo: Vercel usa el "Root Directory" configurado
+      # en cada proyecto (backend/ o frontend/) y las variables de entorno cargadas en Vercel.
+      - name: Desplegar ${{ matrix.app }} en producción
+        if: steps.check.outputs.skip != 'true'
+        run: npx --yes vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"

@@ -1,5 +1,6 @@
 const { Category, User } = require('../models');
 const PREDEFINED_COLORS = require('../constants/colors');
+const { suggestCategory } = require('../services/categorySuggestionService');
 
 // Función para obtener el siguiente color disponible
 const getNextAvailableColor = async (userId) => {
@@ -189,3 +190,44 @@ exports.deleteCategory = async (req, res, next) => {
   }
 };
 
+
+/**
+ * SUGERIR CATEGORÍA PARA UN GASTO (por palabras clave)
+ *
+ * Endpoint: POST /api/categories/suggest
+ * Body: { "vendor": "Coto", "description": "Compra del mes" }
+ * Respuesta: { success: true, data: { categoryId: 3, categoryName: "Comida" } }
+ *            (categoryId y categoryName son null si no hay coincidencia)
+ */
+exports.suggestCategory = async (req, res, next) => {
+  try {
+    const vendor = (req.body.vendor || '').trim();
+    const description = (req.body.description || '').trim();
+
+    if (!vendor && !description) {
+      return res.status(400).json({
+        success: false,
+        message: 'Escribí el comercio o la descripción para poder sugerir una categoría'
+      });
+    }
+
+    // Solo se puede sugerir entre las categorías del usuario logueado
+    const categories = await Category.findAll({
+      where: { userId: req.userId },
+      attributes: ['id', 'name'],
+      raw: true
+    });
+
+    const categoria = suggestCategory({ vendor, description, categories });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        categoryId: categoria?.id ?? null,
+        categoryName: categoria?.name ?? null
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
